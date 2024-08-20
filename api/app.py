@@ -1,32 +1,25 @@
 """Archivo principal de la API"""
 
 from flask import Flask
+from flask_mysqldb import MySQL
+from flask_cors import CORS
+from config import diccionario_de_configuraciones
+from views import vistas
 
 app = Flask(__name__)
+CORS(app)
+conexion = MySQL(app)
 
-@app.route('/')
-def hello_world():
-    """Función que retorna un saludo"""
-    return "<a>Hola Mundo!</a>"
 
-@app.route('/comidas')
-def comidas():
-    """Función que retorna una lista de comidas"""
-    return ['Tacos', 'Pizza', 'Hamburguesa', 'Sushi', 'Pasta', 'Ensalada', 'Pescado']
+@app.route('/api/visitas')
+def get():
+    """Funcion para obtener visitas"""
+    print("entre")
+    cursor = conexion.connection.cursor()
+    print(cursor)
+    return vistas.consultar_visitas(cursor)
 
-@app.route('/comidas/<int:id>')
-def comida(id):
-    """Función que retorna una comida específica"""
-    comidas = ['Tacos', 'Pizza', 'Hamburguesa', 'Sushi', 'Pasta', 'Ensalada', 'Pescado']
-    if id < len(comidas):
-        return comidas[id]
-    else:
-        return 'Comida no encontrada'
-    
-@app.route('/saludo/persona')
-def saludo_persona():
-    """Función que retorna un saludo a una persona"""
-    return 'Hola, persona!'
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.config.from_object(diccionario_de_configuraciones['development'])
+    app.run()
