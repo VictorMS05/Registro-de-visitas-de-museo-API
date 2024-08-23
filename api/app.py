@@ -19,6 +19,17 @@ def get():
     print(cursor)
     return vistas.consultar_visitas(cursor)
 
+@app.route('/api/visitas', methods=['POST'])
+def post():
+    """Funcion para registrar visitas"""
+    cursor = conexion.connection.cursor()
+    return vistas.registrar_visitas(cursor,  conexion)
+
+@app.route('/api/visitas/<int:id>', methods=['PUT'])
+def put(id):
+    """funcion para actualizar las visitas del museo"""
+    cursor= conexion.connection.cursor()
+    return vistas.actualizar_visitas(cursor, conexion, id)
 
 if __name__ == '__main__':
     app.config.from_object(diccionario_de_configuraciones['development'])
